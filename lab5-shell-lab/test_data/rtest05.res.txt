@@ -1,0 +1,2 @@
+./sdriver.pl -t trace05.txt -s ./tshref -a "-p"
+Makefile:71: recipe for target 'rtest05' failed

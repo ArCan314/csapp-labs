@@ -1,0 +1,244 @@
+phase2:
+|8|7|6|5|4|3|2|1|
+|       |       | 32
+|       |  t    | 24 0x18
+|  num6 |  num5 | 16 0x10
+|  num4 |  num3 | 8
+|  num2 |  num1 | 0 rsp
+|               | -8
+|               | -16 
+
+phase3:
+|8|7|6|5|4|3|2|1|
+|       |       | 32
+|       |       | 24 0x18
+|       |       | 16 0x10
+|  num2 |  num1 | 8
+|       |       | 0 rsp
+|               | -8
+|               | -16 
+
+num1 <= 7
+num1    num2
+0       0xcf 207
+1       0x137 311
+2       0x2c3 707
+3       0x100 256
+4       0x185 389
+5       0xce 206
+6       0x2aa 682
+7       0x147 327
+
+phase4:
+|8|7|6|5|4|3|2|1|
+|       |       | 32
+|       |       | 24 0x18
+|       |       | 16 0x10
+|  num2 |  num1 | 8
+|       |       | 0 rsp
+|               | -8
+|               | -16 
+
+num1 == 7 3 1 0
+num2 == 0
+int func4(int x, int y, int z)
+{
+    int edi = x, esi = y, edx = z, ecx, eax;
+    eax = edx;
+    eax -= esi;
+    ecx = eax;
+    ecx = ((unsigned)ecx) >> 31;
+    eax += ecx;
+    eax >>= 1;
+    ecx = eax + esi;
+    if (ecx > edi)
+    {
+        edx = ecx - 1;
+        eax = func4(edi, esi, edx);
+        eax += eax;
+    }
+    else
+    {
+        eax = 0;
+        if (ecx < edi)
+        {
+            esi = ecx + 1;
+            eax = func4(edi, esi, edx);
+            eax = eax + eax + 1;
+        }
+    }
+    return eax;
+}
+
+phase5:
+|8|7|6|5|4|3|2|1|
+|       |       | 32 0x20
+|       |   fs  | 24 0x18
+|       |       | 16 0x10
+|       |       | 8
+|       |       | 0 rsp
+|               | -8
+|               | -16 
+
+input string length is 6
+
+rdi = str
+rbx = &str[0]
+target = flyers
+answer = IONEFG
+0 1 2 3 4 5 6 7 8 9 a b c d e f
+m a d u i e r s n f o t v b y l
+
+phase6:
+|8|7|6|5|4|3|2|1|
+|       |       | 152
+|       |       | 144
+|       |       | 136
+|       |       | 128
+|       |       | 120
+|       |       | 112
+|       |       | 104
+|       |       | 96 
+|       |       | 88
+|       |       | 80 0x50
+|   Node<num6>  | 72 0x48
+|   Node<num5>  | 64 0x40
+|   Node<num4>  | 56 0x38
+|   Node<num3>  | 48 0x30
+|   Node<num2>  | 40 0x28
+|   Node<num1>  | 32 0x20
+|       |   t   | 24 0x18
+|  num6 |  num5 | 16 0x10
+|  num4 |  num3 | 8  0x08
+|  num2 |  num1 | 0 rsp
+|       |       | -8  0x08
+|       |       | -16 0x10
+|       |       | -24 0x18
+
+Node 
+{
+    int val;
+    int idx;
+    Node *next;
+}
+3 4 5 6 1 2
+4 3 2 1 6 5
+sort linked list desc
+phase6()
+{
+    int nums[6];
+    Node nodes[6];
+    for (int i = 0; i < 6; i++)
+        for (int j = i + 1; j < 6; j++)
+            if (nums[i] == nums[j])
+                explode();
+
+    for (int i = 0; i < 6; i++)
+        nums[i] = 7 - nums[i];
+
+    fill accord num
+
+    // rearrange nodes(201 to 220)
+    for (int i = 1; i < 6; i++)
+        node[i-1].next = node[i];
+    node[5].next = null;
+
+    rbp 5
+    rax node[0].next<+235> node[1].val
+
+    rbx Node<i>
+    rax &Node<i+1>
+    rsi &Node<end>
+
+    rcx Node<i>
+    rdx Node<i+1>
+
+}
+
+r12  0<+26> 1<+52>
+r13  rsp<+12>
+r14  rsp<+23><+12>
+rbp  rsp<+12>
+rax  num1
+
+nums belongs to {1,2,3,4,5,6}
+num1 <= 6
+num1 != num2
+num1 != num3
+num1 != num4
+num1 != num5
+num1 != num6
+
+phase_secret:
+in phase_defused:
+|8|7|6|5|4|3|2|1|
+|       |       | 32 0x20
+|       |       | 24 0x18
+|    "DrEvil"   | 16 0x10 secret key to secret phase
+| num2  |  num1 | 8  nums from phase 4
+|       |       | 0 rsp
+|               | -8
+|               | -16
+
+append string("DrEvil") after answer of phase 4
+
+in secret_phase:
+secret_phase()
+{
+    string res = read_line();
+    int num = strtol(res, NULL, 10);
+
+    if (num - 1 > 0x3e8)
+        explode();
+    
+    if (fun7(0x6030f0, num) != 2)
+        explode();
+    phase_defused();
+}
+
+in fun7:
+Node
+{
+    int val;
+    Node *left;
+    Node *right;
+}
+// search node in bst
+int fun7(Node *node, int b)
+{
+    if (node == nullptr)
+        return -1;
+    int node_val = a->val; //edx
+    int result;
+    
+    if (node_val == b)
+            return 0;
+
+    if (node_val < b)
+    {
+        
+        result = fun7(node->right, b);
+        result = 2 * result + 1;
+    }
+    else
+    {
+        result = fun7(node->left, b);
+        result = 2 * result;
+    }
+    return result;
+}
+            n48:3e9
+        n34:6b
+            n47:63
+    n22:32
+            n46:2f
+        n33:2d
+            n45:28
+n1:24  
+            n44:23
+        n32:16
+            n43:14
+    n21:8
+            n42:7
+        n31:6
+            n41:1
